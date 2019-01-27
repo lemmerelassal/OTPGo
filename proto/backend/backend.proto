@@ -1,0 +1,166 @@
+syntax="proto3";
+
+package otpgo.trading.backend;
+
+//import "x-cite.io/brain/proto/model/basic.proto";
+//import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+//option go_package = "x-cite.io/brain/pkg/iot/proto/devicemanagement"; 
+
+message Context {
+	bool verified = 1;
+	string firstname = 2;
+	string lastname = 3;
+	string address = 4;
+	string dob = 5;
+	string phone = 6;
+	string email = 7;
+	string token = 8;
+}
+
+message ResponseStatus {
+	string status = 1;
+}
+
+message GetTickerRequest {
+	string currency = 1;
+	string pricing = 2;
+}
+
+message GetTickerResponse {
+	int32 last = 1;
+	int32 high = 2;
+	int32 low = 3;
+	int32 volume = 4;
+	google.protobuf.Timestamp time_open = 5;
+	google.protobuf.Timestamp time_close = 6;
+}
+
+message GetOrderBookRequest {
+	string currency = 1;
+	string pricing = 2;
+}
+
+message OrderBookEntry {
+	int32 price = 1;
+	int32 amount = 2;
+	int32 total = 3;
+}
+
+message GetOrderBookResponse {
+	repeated OrderBookEntry asks = 1;
+	repeated OrderBookEntry bids = 2;
+}
+
+message GetBalanceRequest {
+	string currency = 1;
+}
+
+message GetBalanceResponse {
+	int32 balance = 1;
+	int32 decimalplaces = 2;
+}
+
+message GetOpenOrdersRequest {
+	string currency = 1;
+}
+
+message OpenOrderEntry {
+	string id = 1;
+	string currency = 2;
+	string pricing = 3;
+	int32 amount_currency = 4;
+	int32 amount_currency_remaining = 5;
+	int32 amount_pricing = 6;
+	int32 amount_pricing_remaining = 7;
+	int32 price_bid = 8;
+	int32 price_ask = 9;
+}
+
+message GetOpenOrdersResponse {
+	repeated OpenOrderEntry openorders = 1;
+}
+
+message CancelOrderRequest {
+	repeated string id = 1;
+}
+
+message PlaceOrderRequest {
+	string currency = 1;
+	string pricing = 2;
+	int32 amount_currency = 3;
+	int32 amount_pricing = 4;
+}
+
+message GetTransactionHistoryRequest {
+	string currency = 1;
+}
+
+message Transaction {
+	google.protobuf.Timestamp timestamp = 1;
+	string currency = 2;
+	int32 amount = 3;
+	string note = 4;
+}
+
+message GetTransactionHistoryResponse {
+	repeated Transaction transactions = 1;
+}
+
+message GetHistoryRequest {
+	string currency = 1;
+	string pricing = 2;
+	int32 interval = 3;
+}
+
+message GetHistoryResponse {
+	int32 volume = 1;
+	int32 timestamp = 2;
+	int32 low = 3;
+	int32 high = 4;
+	int32 open = 5;
+	int32 close = 6;
+}
+
+message LoginRequest {
+	string email = 1;
+}
+
+message LogoutRequest {
+	string token = 1;
+}
+
+message GetProfileRequest {
+	string token = 1;
+}
+
+service OTPGOBackend {
+
+	rpc Login (LoginRequest) returns (ResponseStatus) {}
+	
+	rpc Logout (LogoutRequest) returns (ResponseStatus) {}
+	
+	rpc UpdateProfile (Context) returns (ResponseStatus) {}
+	
+	rpc Signup (Context) returns (ResponseStatus) {}
+	
+	rpc GetTicker (GetTickerRequest) returns (GetTickerResponse) {}
+	
+	rpc GetOrderBook (GetOrderBookRequest) returns (GetOrderBookResponse) {}
+	
+	rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse) {}
+	
+	rpc CancelOrder (CancelOrderRequest) returns (ResponseStatus) {}
+	
+	rpc GetOpenOrders (GetOpenOrdersRequest) returns (GetOpenOrdersResponse) {}
+
+	rpc PlaceOrder (PlaceOrderRequest) returns (ResponseStatus) {}
+	
+	rpc GetProfile (GetProfileRequest) returns (Context) {}
+	
+	rpc GetTransactionHistory (GetTransactionHistoryRequest) returns (GetTransactionHistoryResponse) {}
+	
+	rpc GetHistory (GetHistoryRequest) returns (GetHistoryResponse) {}
+	
+    }
